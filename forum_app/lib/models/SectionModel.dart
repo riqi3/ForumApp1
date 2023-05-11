@@ -9,11 +9,13 @@ class SectionModel {
   String sectionDescription;
   List<CommentsModel> comments = [];
   List<TopicModel> topics = [];
+ 
 
   SectionModel({
     this.sectionId = 0,
     required this.sectionTitle,
     this.sectionDescription = '',
+     this.topics = const [],
   });
 
   int get id => sectionId;
@@ -40,8 +42,12 @@ class SectionModel {
     topics.remove(topic);
   }
 
-  void setTopicList(List<TopicModel> topics){
-    this.topics=topics;
+  void setTopicList(List<TopicModel> topics) {
+    this.topics = topics;
+  }
+
+    void setCommentList(List<CommentsModel> comments) {
+    this.comments = comments;
   }
 
   factory SectionModel.fromJson(Map<String, dynamic> json) {
@@ -65,6 +71,4 @@ class SectionModel {
         'title': sectionTitle,
         'description': sectionDescription,
       };
-
- 
 }

@@ -8,15 +8,14 @@ import '../models/SectionModel.dart';
 import '../models/TopicModel.dart';
 
 class SectionProvider with ChangeNotifier {
-
-
   // SectionProvider() {
   //   this.fetchSection();
   // }
 
   final List<SectionModel> _sections = [];
 
-  UnmodifiableListView<SectionModel> get allSections => UnmodifiableListView(_sections);
+  UnmodifiableListView<SectionModel> get allSections =>
+      UnmodifiableListView(_sections);
 
   // void toggleSection(SectionModel section) {
   //   final sectionIndex = sections.indexOf(section);
@@ -24,11 +23,11 @@ class SectionProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  bool empty(){
+  bool empty() {
     return _sections.isEmpty;
   }
 
-  int getIndex(int id){
+  int getIndex(int id) {
     int index = _sections.indexWhere((e) => e.id == id);
 
     return index;
@@ -61,8 +60,7 @@ class SectionProvider with ChangeNotifier {
     //   // sections.add(section);
     //   // notifyListeners();
     // }
-    _sections[getIndex(id)].setTopicList(topics);
-    notifyListeners();
+ 
   }
 
   fetchSection() async {

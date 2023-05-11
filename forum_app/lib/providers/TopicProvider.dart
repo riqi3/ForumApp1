@@ -7,10 +7,10 @@ import '../main.dart';
  
 import '../models/TopicModel.dart';
 
-class TopicsProvider with ChangeNotifier {
+class TopicProvider with ChangeNotifier {
 
 
-  // TopicsProvider() {
+  // TopicProvider() {
   //   this.fetchSection();
   // }
 
@@ -27,6 +27,10 @@ class TopicsProvider with ChangeNotifier {
 
   bool empty(){
     return _topics.isEmpty;
+  }
+
+  bool notEmpty(){
+    return _topics.isNotEmpty;
   }
 
   int getIndex(int id){
@@ -58,6 +62,11 @@ class TopicsProvider with ChangeNotifier {
     //   // notifyListeners();
     // }
     // _topics[getIndex(id)].setTopicList(topics);
+    notifyListeners();
+  }
+
+    void add(TopicModel topic) {
+    _topics.add(topic);
     notifyListeners();
   }
 

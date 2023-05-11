@@ -5,16 +5,19 @@ class TopicModel {
   int topicId;
   String topicTitle;
   String topicDescription;
-
+  List<TopicModel> topics = [];
   List<CommentsModel> comments = [];
 
   TopicModel({
     this.topicId = 0,
     required this.topicTitle,
     this.topicDescription = '',
+    this.comments = const [],
+    this.topics = const [],
   });
 
   List<CommentsModel> get commentList => comments;
+  List<TopicModel> get topicList => topics;
   int get id => topicId;
   String get title => topicTitle;
   String get description => topicDescription;

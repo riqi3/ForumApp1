@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forum_app/providers/TopicProvider.dart';
 import 'package:forum_app/widgets/NewSectionWidget.dart';
 import 'package:forum_app/widgets/SectionWidget.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +13,14 @@ void main() {
       providers: [
         ChangeNotifierProvider(
           create: (_) => SectionProvider(),
-          child: ForumApp(),
+          child: const ForumApp(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TopicProvider(),
+          child: const ForumApp(),
         ),
       ],
-      child: ForumApp(),
+      child: const ForumApp(),
     ),
   );
 }
