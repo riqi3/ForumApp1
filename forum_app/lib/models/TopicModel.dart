@@ -2,14 +2,14 @@
 import 'CommentsModel.dart';
 
 class TopicModel {
-  int topicId;
+  String topicId;
   String topicTitle;
   String topicDescription;
   List<TopicModel> topics = [];
   List<CommentsModel> comments = [];
 
   TopicModel({
-    this.topicId = 0,
+    this.topicId = '',
     required this.topicTitle,
     this.topicDescription = '',
     this.comments = const [],
@@ -18,11 +18,11 @@ class TopicModel {
 
   List<CommentsModel> get commentList => comments;
   List<TopicModel> get topicList => topics;
-  int get id => topicId;
+  String get id => topicId;
   String get title => topicTitle;
   String get description => topicDescription;
 
-  set setId(int id) {
+  set setId(String id) {
     topicId = id;
   }
 

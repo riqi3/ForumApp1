@@ -60,7 +60,6 @@ class SectionProvider with ChangeNotifier {
     //   // sections.add(section);
     //   // notifyListeners();
     // }
- 
   }
 
   fetchSection() async {
@@ -77,6 +76,5 @@ class SectionProvider with ChangeNotifier {
     //     print('a network error occured');
     //   }
     // }
-    notifyListeners();
   }
 }

@@ -1,23 +1,22 @@
- 
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:forum_app/dummy.dart';
- 
- 
+
 import 'package:forum_app/models/TopicModel.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
 import 'package:forum_app/screens/TopicScreen.dart';
+import 'package:forum_app/widgets/NewTopicWidget.dart';
 import 'package:forum_app/widgets/TopicWidget.dart';
- 
+
 import 'package:provider/provider.dart';
 
 class TopicWidget extends StatelessWidget {
- 
- final UnmodifiableListView<TopicModel> allTopics;
-  TopicWidget({Key? key,  
-   required this.allTopics, 
-   }) : super(key: key);
+  final UnmodifiableListView<TopicModel> allTopics;
+  TopicWidget({
+    Key? key,
+    required this.allTopics,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,68 +29,66 @@ class TopicWidget extends StatelessWidget {
           context.read<TopicProvider>().empty()
               ? emptyCard(context)
               : Expanded(
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: allTopics.map((e) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => Consumer<TopicProvider>(
-                              builder: (context, value, child) {
-                                 
-                                return TopicScreen();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ListTile(
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    children: allTopics.map((e) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => Consumer<TopicProvider>(
+                                builder: (context, value, child) {
+                                  String id = value.getTopicId(e);
+                                  return NewTopicWidget(
  
-                          title: Text(
-                            e.title,
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          subtitle: Text(
-                            e.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              context
-                                  .read<TopicProvider>()
-                                  .deleteTopic(e);
-                            },
-                            icon: const Icon(
-                              Icons.delete,
+                                    allTopics: allTopics, 
+                                  );
+                                  // return Text('${e.id}. ${e.title}, ${e.description}');
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: ListTile(
+                            title: Text(
+                              e.title,
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            subtitle: Text(
+                              e.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                context.read<TopicProvider>().deleteTopic(e);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
         ],
       ),
-            floatingActionButton: FloatingActionButton.extended(
-
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-           addTopic(context);
+          addTopic(context);
         },
         label: Text('Add Topic'),
       ),
     );
   }
 
-
-
-    Future<void> addTopic(BuildContext context) async {
+  Future<void> addTopic(BuildContext context) async {
     TextEditingController titleController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     return showModalBottomSheet(
@@ -153,9 +150,6 @@ class TopicWidget extends StatelessWidget {
     );
   }
 
-
-
-  
   Widget emptyCard(BuildContext context) {
     return SingleChildScrollView(
       child: SizedBox(
@@ -177,7 +171,6 @@ class TopicWidget extends StatelessWidget {
       ),
     );
   }
-
 }
 
 

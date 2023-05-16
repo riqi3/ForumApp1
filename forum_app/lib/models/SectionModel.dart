@@ -9,15 +9,16 @@ class SectionModel {
   String sectionDescription;
   List<CommentsModel> comments = [];
   List<TopicModel> topics = [];
- 
 
   SectionModel({
     this.sectionId = 0,
     required this.sectionTitle,
     this.sectionDescription = '',
-     this.topics = const [],
+    this.topics = const [],
   });
 
+    List<CommentsModel> get commentList => comments;
+  List<TopicModel> get topicList => topics;
   int get id => sectionId;
   String get title => sectionTitle;
   String get description => sectionDescription;
@@ -46,7 +47,7 @@ class SectionModel {
     this.topics = topics;
   }
 
-    void setCommentList(List<CommentsModel> comments) {
+  void setCommentList(List<CommentsModel> comments) {
     this.comments = comments;
   }
 

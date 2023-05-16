@@ -4,6 +4,9 @@ import 'package:forum_app/providers/SectionProvider.dart';
 import 'package:forum_app/widgets/SectionWidget.dart';
  
 import 'package:provider/provider.dart';
+
+import 'providers/TopicProvider.dart';
+import 'widgets/TopicWidget.dart';
  
 
 class HomeScreen extends StatefulWidget {
@@ -36,6 +39,14 @@ Widget eventListConsumer(BuildContext context) {
   return Consumer<SectionProvider>(
     builder: (context, value, child) {
       return SectionWidget(allSections: value.allSections,);
+    },
+  );
+}
+
+Widget topicListConsumer(BuildContext context) {
+  return Consumer<TopicProvider>(
+    builder: (context, value, child) {
+      return TopicWidget(allTopics: value.allTopics,);
     },
   );
 }

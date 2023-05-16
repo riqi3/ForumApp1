@@ -4,12 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
- 
+
 import '../models/TopicModel.dart';
 
 class TopicProvider with ChangeNotifier {
-
-
   // TopicProvider() {
   //   this.fetchSection();
   // }
@@ -25,15 +23,19 @@ class TopicProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  bool empty(){
+  bool empty() {
     return _topics.isEmpty;
   }
 
-  bool notEmpty(){
+  bool checkEmpty(String id) {
+    return _topics[getIndex(id)].commentList.isEmpty;
+  }
+
+  bool notEmpty() {
     return _topics.isNotEmpty;
   }
 
-  int getIndex(int id){
+  int getIndex(String id) {
     int index = _topics.indexWhere((e) => e.id == id);
 
     return index;
@@ -65,9 +67,22 @@ class TopicProvider with ChangeNotifier {
     notifyListeners();
   }
 
-    void add(TopicModel topic) {
+  void add(TopicModel topic) {
     _topics.add(topic);
     notifyListeners();
+  }
+
+  String getTopicId(TopicModel list) {
+    int index = _topics.indexWhere((e) => e == list);
+    return _topics[index].id;
+  }
+
+  String getTitle(String id) {
+    return _topics[getIndex(id)].title;
+  }
+
+  List<TopicModel> getTopics(String id) {
+    return _topics[getIndex(id)].topicList;
   }
 
   fetchSection() async {
