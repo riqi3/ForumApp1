@@ -6,9 +6,8 @@ import 'package:forum_app/models/TopicModel.dart';
 import 'package:forum_app/providers/SectionProvider.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
 
-
 import 'package:provider/provider.dart';
- 
+
 import 'NewTopicWidget.dart';
 
 class NewSectionWidget extends StatelessWidget {
@@ -42,17 +41,17 @@ class NewSectionWidget extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => Consumer<TopicProvider>(
                                 builder: (context, value, child) {
- 
+                                  context
+                                      .read<SectionProvider>()
+                                      .add(newSection);
                                   return NewTopicWidget(
                                     newTopic: e,
                                     allTopics:
                                         UnmodifiableListView(e.topicList),
-
                                   );
                                 },
                               ),
                             ),
-                            
                           );
                         },
 
@@ -130,16 +129,12 @@ class NewSectionWidget extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add topic',
         onPressed: () {
- 
           addTopic(context);
         },
         label: Text('Add Topic'),
       ),
     );
   }
-
- 
-
 
   Future<void> addTopic(BuildContext context) async {
     TextEditingController titleController = TextEditingController();

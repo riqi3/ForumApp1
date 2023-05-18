@@ -38,7 +38,7 @@ dependencies:
   provider: ^6.0.5
   http: ^0.13.6
   mysql1: ^0.20.0
-  
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:

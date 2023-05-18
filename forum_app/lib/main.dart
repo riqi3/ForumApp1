@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
+import 'package:forum_app/users/authentication/LoginScreen.dart';
 import 'package:forum_app/widgets/NewSectionWidget.dart';
 import 'package:forum_app/widgets/SectionWidget.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import 'home.dart';
@@ -33,13 +35,18 @@ class ForumApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: ((context) => SectionProvider()),
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'FORUM',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomeScreen(),
+        // home: HomeScreen(),
+        home: FutureBuilder(
+          builder: (context, dataSnapShot) {
+            return LoginScreen();
+          },
+        ),
       ),
     );
   }

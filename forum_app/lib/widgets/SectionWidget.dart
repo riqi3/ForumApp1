@@ -1,19 +1,13 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'package:forum_app/dummy.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:forum_app/home.dart';
+import 'package:forum_app/services/RemoteService.dart';
 import 'package:forum_app/models/SectionModel.dart';
-import 'package:forum_app/models/TopicModel.dart';
-import 'package:forum_app/mySQL/mysql.dart';
-import 'package:forum_app/providers/TopicProvider.dart';
-import 'package:forum_app/screens/TopicScreen.dart';
-import 'package:forum_app/widgets/TopicWidget.dart';
 import 'package:provider/provider.dart';
 import '../providers/SectionProvider.dart';
 import 'NewSectionWidget.dart';
-    TextEditingController titleController = TextEditingController();
+
+TextEditingController titleController = TextEditingController();
+
 class SectionWidget extends StatefulWidget {
   final UnmodifiableListView<SectionModel> allSections;
   const SectionWidget({
@@ -26,43 +20,28 @@ class SectionWidget extends StatefulWidget {
 }
 
 class _SectionWidgetState extends State<SectionWidget> {
-  // late MySqlConnection _connection;
-
-  //   @override
-  // void initState() {
-  //   super.initState();
-  //   // establish database connection when the widget is initialized
-  //   _initDatabase();
-  // }
-
-  // Future<void> _initDatabase() async {
-  //   final mysql = Mysql();
-  //   _connection = await mysql.getConnection();
-  // }
+  // var isLoaded = false;
+  // List<SectionModel>? sections;
 
   // @override
-  // void dispose() {
-  //   // close database connection when the widget is disposed
-  //   _connection.close();
-  //   super.dispose();
+  // void initState() {
+  //   super.initState();
+  //   getData();
   // }
-  // var db = new Mysql();
-  // var numSection = '';
-  // void _postSection() {
-  //   db.getConnection().then((conn) {
-      
-  //     conn.query(sql).then((results) {
-  //       for (var row in results) {
-  //         setState(() {
-  //           numSection = row[0];
-  //         });
-  //       }
+
+  // getData() async {
+  //   sections = await RemoteService().getPosts();
+  //   if(sections != null){
+  //     setState(() {
+  //       isLoaded = true;
   //     });
-  //   });
+  //   }
   // }
+
 
   @override
   Widget build(BuildContext context) {
+    final sections=Provider.of<SectionProvider>(context);
     return Scaffold(
       backgroundColor: Colors.limeAccent,
       body: Column(
@@ -74,9 +53,12 @@ class _SectionWidgetState extends State<SectionWidget> {
                   child: ListView(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    children: widget.allSections.map((e) {
+                    children: sections.allSections.map((e) {
                       return GestureDetector(
                         onTap: () {
+                          final newSection = SectionModel(sectionId: 0,sectionTitle: titleController.text);
+              context.read<SectionProvider>().add(newSection);
+
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => Consumer<SectionProvider>(
@@ -86,9 +68,6 @@ class _SectionWidgetState extends State<SectionWidget> {
                                     allTopics:
                                         UnmodifiableListView(e.topicList),
                                   );
-
-                                  // return NewSectionWidget(allTopics: UnmodifiableListView(e.topics),
-                                  // );
                                 },
                               ),
                             ),
@@ -100,12 +79,6 @@ class _SectionWidgetState extends State<SectionWidget> {
                             title: Text(
                               e.title,
                               style: TextStyle(fontSize: 24),
-                            ),
-                            subtitle: Text(
-                              e.description,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
                             ),
                             trailing: IconButton(
                               onPressed: () {
@@ -128,10 +101,7 @@ class _SectionWidgetState extends State<SectionWidget> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add section',
         onPressed: () async {
-          // _initDatabase();
-          // final results = await _connection.query('SELECT * FROM forumApp.sections');
-          // print(results);
-          await newSection1(titleController.text);
+          // await newSection1(titleController.text);
           addSection(context);
         },
         label: Text('Add Section'),
@@ -139,21 +109,18 @@ class _SectionWidgetState extends State<SectionWidget> {
     );
   }
 
-  static Future<int?> newSection1(String title) async {
-  MySqlConnection conn = await Mysql().getConnection();
-  final sec = SectionModel(sectionTitle: title);
-  var result = await conn.query(
-      'INSERT INTO sections(title) VALUES (?)',[sec.title]
-      );
+  // static Future<int?> newSection1(String title) async {
+  //   MySqlConnection conn = await Mysql().getConnection();
+  //   final sec = SectionModel(sectionTitle: title, sectionId: 0);
+  //   var result =
+  //       await conn.query('INSERT INTO sections(title) VALUES (?)', [sec.title]);
 
-  await conn.close();
+  //   await conn.close();
 
-  return result.affectedRows;
-}
+  //   return result.affectedRows;
+  // }
 
   Future<void> addSection(BuildContext context) async {
-
-
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -178,6 +145,7 @@ class _SectionWidgetState extends State<SectionWidget> {
                     context.read<SectionProvider>().add(
                           SectionModel(
                             sectionTitle: titleController.text,
+                            sectionId: 0,
                           ),
                         );
                     Navigator.pop(context);
