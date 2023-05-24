@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:forum_app/services/RemoteService.dart';
 import 'package:forum_app/models/SectionModel.dart';
 import 'package:provider/provider.dart';
 import '../providers/SectionProvider.dart';
@@ -38,64 +37,84 @@ class _SectionWidgetState extends State<SectionWidget> {
   //   }
   // }
 
-
   @override
   Widget build(BuildContext context) {
-    final sections=Provider.of<SectionProvider>(context);
+    final sectionsProvider = Provider.of<SectionProvider>(context);
     return Scaffold(
       backgroundColor: Colors.limeAccent,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          context.read<SectionProvider>().empty()
-              ? emptyCard(context)
-              : Expanded(
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: sections.allSections.map((e) {
-                      return GestureDetector(
-                        onTap: () {
-                          final newSection = SectionModel(sectionId: 0,sectionTitle: titleController.text);
-              context.read<SectionProvider>().add(newSection);
+          if (sectionsProvider.empty())
+            emptyCard(context)
+          else
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: widget.allSections.toList().map((e) {
+                  return GestureDetector(
+                    onTap: () {
+                      final newSection = SectionModel(
+                        sectionId: 0,
+                        sectionTitle: titleController.text,
+                      );
+                      context.read<SectionProvider>().add(newSection);
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Consumer<SectionProvider>(
-                                builder: (context, value, child) {
-                                  return NewSectionWidget(
-                                    newSection: e,
-                                    allTopics:
-                                        UnmodifiableListView(e.topicList),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ListTile(
-                            title: Text(
-                              e.title,
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                context
-                                    .read<SectionProvider>()
-                                    .deleteSection(e);
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                              ),
-                            ),
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Consumer<SectionProvider>(
+                            builder: (context, value, child) {
+                              return NewSectionWidget(
+                                newSection: e,
+                                allTopics: UnmodifiableListView(e.topicList),
+                              );
+                            },
                           ),
                         ),
                       );
-                    }).toList(),
-                  ),
-                ),
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ListTile(
+                        title: Text(
+                          e.title,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            final index =
+                                sectionsProvider.allSections.indexOf(e);
+                            sectionsProvider.deleteSection(
+                                sectionsProvider.allSections[index]);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                          ),
+                        ),
+
+                        //                         IconButton(
+                        //                           onPressed: () {
+
+                        // final index = widget.allSections.indexOf(e);
+                        // if (index >= 0) {
+                        //   final updatedAllSections = sectionsProvider.deleteSection(
+                        //     widget.allSections[index]
+                        //   );
+                        //   sectionsProvider.updatedaSections(updatedAllSections as List<SectionModel>);
+                        // }
+
+                        //                           },
+                        //                           icon: const Icon(
+                        //                             Icons.delete,
+                        //                           ),
+                        //                         ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -144,8 +163,8 @@ class _SectionWidgetState extends State<SectionWidget> {
                   if (titleController.text.isNotEmpty) {
                     context.read<SectionProvider>().add(
                           SectionModel(
-                            sectionTitle: titleController.text,
                             sectionId: 0,
+                            sectionTitle: titleController.text,
                           ),
                         );
                     Navigator.pop(context);

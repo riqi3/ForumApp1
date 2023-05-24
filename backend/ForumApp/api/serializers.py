@@ -9,3 +9,12 @@ class SectionSerializers(serializers.ModelSerializer):
             'title',
         )
         model=models.Section
+
+class TopicSerializers(serializers.ModelSerializer):
+    class Meta:
+        fields=(
+            'id',
+            'title',
+            'description'
+        )
+        model=models.Topic

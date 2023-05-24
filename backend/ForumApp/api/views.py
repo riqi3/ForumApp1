@@ -9,6 +9,7 @@ from rest_framework import generics
 class ListSection(generics.ListCreateAPIView):
     queryset=models.Section.objects.all()
     serializer_class=SectionSerializers
+    
 
 class DetailSection(generics.RetrieveUpdateDestroyAPIView):
     queryset=models.Section.objects.all()

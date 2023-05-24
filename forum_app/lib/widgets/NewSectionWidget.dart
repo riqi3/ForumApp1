@@ -9,6 +9,7 @@ import 'package:forum_app/providers/TopicProvider.dart';
 import 'package:provider/provider.dart';
 
 import 'NewTopicWidget.dart';
+import 'TopicWidget.dart';
 
 class NewSectionWidget extends StatelessWidget {
   SectionModel newSection;
@@ -28,80 +29,59 @@ class NewSectionWidget extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          context.read<TopicProvider>().empty()
-              ? emptyCard(context)
-              : Expanded(
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: allTopics.map((e) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Consumer<TopicProvider>(
-                                builder: (context, value, child) {
-                                  context
-                                      .read<SectionProvider>()
-                                      .add(newSection);
-                                  return NewTopicWidget(
-                                    newTopic: e,
-                                    allTopics:
-                                        UnmodifiableListView(e.topicList),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-
-                        // {
-                        //   Navigator.of(context).push(
-                        //     MaterialPageRoute(
-                        //       builder: (context) => Consumer<TopicProvider>(
-                        //         builder: (context, value, child) {
-                        //           String id = value.getTopicId(e);
-                        //           return NewTopicWidget(
-                        //             newTopic: e,
-                        //             id: id,
-                        //             title: value.getTitle(id),
-                        //             allTopics: allTopics,
-                        //           );
-
-                        //           // return NewSectionWidget(allTopics: UnmodifiableListView(e.topics),
-                        //           // );
-                        //         },
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ListTile(
-                            title: Text(
-                              e.title,
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            subtitle: Text(
-                              e.description,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                context.read<TopicProvider>().deleteTopic(e);
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                              ),
-                            ),
+          if (context.read<TopicProvider>().empty())
+            emptyCard(context)
+          else
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: allTopics.map((e) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Consumer<TopicProvider>(
+                            builder: (context, value, child) {
+                              context.read<SectionProvider>().add(newSection);
+                              return NewTopicWidget(
+                                newTopic: e,
+                                allTopics: UnmodifiableListView(e.topicList),
+                              );
+                            },
                           ),
                         ),
                       );
-                    }).toList(),
-                  ),
-                ),
+                    },
+
+ 
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ListTile(
+                        title: Text(
+                          e.title,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        subtitle: Text(
+                          e.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            context.read<TopicProvider>().deleteTopic(e);
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
         ],
       ),
 
@@ -135,6 +115,15 @@ class NewSectionWidget extends StatelessWidget {
       ),
     );
   }
+  
+  Widget topicListConsumer(BuildContext context) {
+  return Consumer<TopicProvider>(
+    builder: (context, value, child) {
+      return TopicWidget(allTopics: value.allTopics,);
+    },
+  );
+}
+
 
   Future<void> addTopic(BuildContext context) async {
     TextEditingController titleController = TextEditingController();
@@ -220,27 +209,27 @@ class NewSectionWidget extends StatelessWidget {
     );
   }
 
-  Widget addList(BuildContext context, SectionModel section) {
-    var topics = context.read<TopicProvider>().allTopics;
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Select topic'),
-      ),
-      body: ListView(
-        children: topics.map((e) {
-          return GestureDetector(
-            onTap: () {
-              var selectTopic = e.topicList;
-              context
-                  .read<SectionProvider>()
-                  .addSection(section.sectionId, selectTopic);
-              Navigator.pop(context);
-            },
-            child: Text(e.title),
-          );
-        }).toList(),
-      ),
-    );
-  }
+  // Widget addList(BuildContext context, SectionModel section) {
+  //   var topics = context.read<TopicProvider>().allTopics;
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       centerTitle: true,
+  //       title: const Text('Select topic'),
+  //     ),
+  //     body: ListView(
+  //       children: topics.map((e) {
+  //         return GestureDetector(
+  //           onTap: () {
+  //             var selectTopic = e.topicList;
+  //             context
+  //                 .read<SectionProvider>()
+  //                 .addSection(section.sectionId, selectTopic);
+  //             Navigator.pop(context);
+  //           },
+  //           child: Text(e.title),
+  //         );
+  //       }).toList(),
+  //     ),
+  //   );
+  // }
 }

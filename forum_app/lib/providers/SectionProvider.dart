@@ -32,16 +32,16 @@ class SectionProvider with ChangeNotifier {
   }
 
   void deleteSection(SectionModel section) async {
-    final url = 'http://10.0.2.2:8000/sections/${section.id}';
+    final url = 'http://10.0.2.2:8000/sections/${section.id}/';
     final response = await http.delete(Uri.parse(url));
-
     if (response.statusCode == 204) {
       _sections.remove(section);
       notifyListeners();
     }
+    // return _sections;
   }
 
-  void add(SectionModel section) async {
+    void add(SectionModel section) async {
     const url = 'http://10.0.2.2:8000/sections/';
     final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
@@ -53,17 +53,11 @@ class SectionProvider with ChangeNotifier {
     }
   }
 
-  void addSection(int id, List<TopicModel> topics) async {
-    // final url = '${envurl}apis/v1/?format=json';
-    // final response = await http.post(Uri.parse(url),
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: json.encode(section));
-    // if (response.statusCode == 201) {
-    //   section.id = json.decode(response.body)['id'];
-    //   // sections.add(section);
-    //   // notifyListeners();
-    // }
+  void updatedaSections(List<SectionModel> updatedSections) {
+    _sections = updatedSections;
+    notifyListeners();
   }
+
 
   fetchSection() async {
     // final url = 'http://127.0.0.1:8000/apis/v1/?format=json';

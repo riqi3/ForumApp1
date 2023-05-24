@@ -8,7 +8,8 @@ List<SectionModel> sectionModelFromJson(String str) => List<SectionModel>.from(
 String sectionModelToJson(SectionModel data) => json.encode(data.toJson());
 
 class SectionModel {
-  int sectionId;
+  int
+   sectionId;
   String sectionTitle;
 
   List<CommentsModel> comments = [];
@@ -23,6 +24,7 @@ class SectionModel {
 
   List<CommentsModel> get commentList => comments;
   List<TopicModel> get topicList => topics;
+  List<SectionModel> get sectionList => sections;
   int get id => sectionId;
   String get title => sectionTitle;
 
@@ -42,6 +44,10 @@ class SectionModel {
     topics.remove(topic);
   }
 
+    void setSectionList(List<SectionModel> section) {
+     sections = section;
+  }
+
   void setTopicList(List<TopicModel> topics) {
     this.topics = topics;
   }
@@ -53,12 +59,12 @@ class SectionModel {
   factory SectionModel.fromJson(Map<String, dynamic> json) {
     return SectionModel(
       sectionId: json["id"],
-      sectionTitle: json["title"],
+      sectionTitle: json["title"], 
     );
   }
 
   dynamic toJson() => {
-        "id": sectionId.toString(),
+        "id": sectionId,
         "title": sectionTitle,
       };
 }
