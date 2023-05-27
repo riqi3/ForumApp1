@@ -8,18 +8,16 @@ List<SectionModel> sectionModelFromJson(String str) => List<SectionModel>.from(
 String sectionModelToJson(SectionModel data) => json.encode(data.toJson());
 
 class SectionModel {
-  int
-   sectionId;
+  int sectionId;
   String sectionTitle;
-
   List<CommentsModel> comments = [];
-  List<TopicModel> topics = [];
+  List<TopicModel> topics;
   List<SectionModel> sections = [];
 
   SectionModel({
     required this.sectionId,
     required this.sectionTitle,
-    this.topics = const [],
+    required this.topics,
   });
 
   List<CommentsModel> get commentList => comments;
@@ -59,7 +57,7 @@ class SectionModel {
   factory SectionModel.fromJson(Map<String, dynamic> json) {
     return SectionModel(
       sectionId: json["id"],
-      sectionTitle: json["title"], 
+      sectionTitle: json["title"], topics: [], 
     );
   }
 
@@ -67,4 +65,18 @@ class SectionModel {
         "id": sectionId,
         "title": sectionTitle,
       };
+
+
+    SectionModel copyWith({
+    List<TopicModel>? topicList,
+    // Add other properties you want to update here...
+  }) {
+    return SectionModel(
+      sectionId: this.sectionId,
+      sectionTitle: this.title,
+      // Copy other existing properties...
+      topics: topicList ?? this.topicList,
+      // Assign the updated topicList or use the existing one if not provided.
+    );
+  }
 }

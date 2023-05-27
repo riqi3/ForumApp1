@@ -17,11 +17,15 @@ from django.contrib import admin
 from django.urls import path 
 from api import views
 from api.views import ListSection, DetailSection
+from api.views import ListTopic, DetailTopic
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', views.getData),
     path('create-section/', views.addSection),
+    path('create-topic/', views.addTopic),
     path('sections/', ListSection.as_view()),
+    path('topics/', ListTopic.as_view()),
     path('sections/<int:pk>/', DetailSection.as_view()),
+    path('topics/<int:pk>/', DetailTopic.as_view()),
 ]

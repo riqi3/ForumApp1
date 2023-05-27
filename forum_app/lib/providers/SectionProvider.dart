@@ -25,6 +25,10 @@ class SectionProvider with ChangeNotifier {
     return _sections.isEmpty;
   }
 
+    bool notEmpty() {
+    return _sections.isNotEmpty;
+  }
+
   int getIndex(int id) {
     int index = _sections.indexWhere((e) => e.id == id);
 
@@ -71,6 +75,14 @@ class SectionProvider with ChangeNotifier {
       notifyListeners();
     } else {
       print('a network error occured');
+    }
+  }
+
+    void updateSection(SectionModel updatedSection) {
+    final index = _sections.indexWhere((section) => section.sectionId == updatedSection.sectionId);
+    if (index >= 0) {
+      _sections[index] = updatedSection;
+      notifyListeners();
     }
   }
 }

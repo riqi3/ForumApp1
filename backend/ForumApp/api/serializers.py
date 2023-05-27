@@ -1,20 +1,13 @@
 from rest_framework import serializers
 # from sections.models import Section
-from sections import models
+from .models import Section, Topic
 
 class SectionSerializers(serializers.ModelSerializer):
     class Meta:
-        fields=(
-            'id',
-            'title',
-        )
-        model=models.Section
+        model=Section 
+        fields = '__all__'
 
 class TopicSerializers(serializers.ModelSerializer):
     class Meta:
-        fields=(
-            'id',
-            'title',
-            'description'
-        )
-        model=models.Topic
+        model=Topic 
+        fields = '__all__'

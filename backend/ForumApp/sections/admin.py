@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from .models import Section
+from api.models import Section
 
 admin.site.register(Section)
+

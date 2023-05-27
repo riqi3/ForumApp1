@@ -1,33 +1,64 @@
+ 
 // import 'package:flutter/material.dart';
-// import 'package:forum_app/providers/TopicProvider.dart';
-// import 'package:forum_app/widgets/TopicWidget.dart';
+// import 'package:forum_app/models/SectionModel.dart';
+// import 'package:forum_app/providers/SectionProvider.dart';
+// import 'package:forum_app/widgets/SectionWidget.dart';
+ 
 // import 'package:provider/provider.dart';
 
-// class dummypage extends StatelessWidget {
-//   const dummypage({super.key});
+// import 'providers/TopicProvider.dart';
+// import 'widgets/NewTopicWidget.dart';
+// import 'widgets/TopicWidget.dart';
+ 
+
+// class DummyScreen extends StatefulWidget {
+//   const DummyScreen({super.key});
+
+//   @override
+//   State<DummyScreen> createState() => _DummyScreenState();
+// }
+
+// class _DummyScreenState extends State<DummyScreen> {
+
+//   String title = "DummyScreen";
+
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.orange,
+
+//     return 
+//     // Container(
+//     //   color: Colors.greenAccent,
+//     //   width: 100,
+//     //   height: 100,
+//     // );
+
+//     Scaffold(
+//       backgroundColor: Color.fromARGB(255, 0, 255, 106),
 //       appBar: AppBar(
 //         title: Text(
-//           'title',
+//           title,
 //         ),
 //       ),
 //       body: topicListConsumer(context),
 //     );
 //   }
+// }
 
 
-//   Widget topicListConsumer(BuildContext context) {
-//   return Consumer<TopicProvider>(
+// Widget eventListConsumer(BuildContext context) {
+//   return Consumer<SectionProvider>(
 //     builder: (context, value, child) {
-//       return TopicWidget(allTopics: value.allTopics);
+//       return SectionWidget(allSections: value.allSections,);
 //     },
 //   );
 // }
 
-
-
+// Widget topicListConsumer(BuildContext context) {
+//   return Consumer<TopicProvider>(
+//     builder: (context, value, child) {
+//        final sectionsProvider = Provider.of<SectionProvider>(context);
+//       return TopicWidget(allTopics: value.allTopics );
+//     },
+//   );
 // }

@@ -9,8 +9,10 @@ TextEditingController titleController = TextEditingController();
 
 class SectionWidget extends StatefulWidget {
   final UnmodifiableListView<SectionModel> allSections;
+ 
   const SectionWidget({
     Key? key,
+ 
     required this.allSections,
   }) : super(key: key);
 
@@ -19,24 +21,9 @@ class SectionWidget extends StatefulWidget {
 }
 
 class _SectionWidgetState extends State<SectionWidget> {
-  // var isLoaded = false;
-  // List<SectionModel>? sections;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getData();
-  // }
 
-  // getData() async {
-  //   sections = await RemoteService().getPosts();
-  //   if(sections != null){
-  //     setState(() {
-  //       isLoaded = true;
-  //     });
-  //   }
-  // }
-
+  
   @override
   Widget build(BuildContext context) {
     final sectionsProvider = Provider.of<SectionProvider>(context);
@@ -48,98 +35,23 @@ class _SectionWidgetState extends State<SectionWidget> {
           if (sectionsProvider.empty())
             emptyCard(context)
           else
-            Expanded(
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: widget.allSections.toList().map((e) {
-                  return GestureDetector(
-                    onTap: () {
-                      final newSection = SectionModel(
-                        sectionId: 0,
-                        sectionTitle: titleController.text,
-                      );
-                      context.read<SectionProvider>().add(newSection);
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => Consumer<SectionProvider>(
-                            builder: (context, value, child) {
-                              return NewSectionWidget(
-                                newSection: e,
-                                allTopics: UnmodifiableListView(e.topicList),
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ListTile(
-                        title: Text(
-                          e.title,
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        trailing: IconButton(
-                          onPressed: () {
-                            final index =
-                                sectionsProvider.allSections.indexOf(e);
-                            sectionsProvider.deleteSection(
-                                sectionsProvider.allSections[index]);
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                          ),
-                        ),
-
-                        //                         IconButton(
-                        //                           onPressed: () {
-
-                        // final index = widget.allSections.indexOf(e);
-                        // if (index >= 0) {
-                        //   final updatedAllSections = sectionsProvider.deleteSection(
-                        //     widget.allSections[index]
-                        //   );
-                        //   sectionsProvider.updatedaSections(updatedAllSections as List<SectionModel>);
-                        // }
-
-                        //                           },
-                        //                           icon: const Icon(
-                        //                             Icons.delete,
-                        //                           ),
-                        //                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+            createSectionCard(
+              widget: widget,
+              sectionsProvider: sectionsProvider,
             ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add section',
-        onPressed: () async {
-          // await newSection1(titleController.text);
-          addSection(context);
+        onPressed: () {
+          addSection(context, sectionsProvider);
         },
         label: Text('Add Section'),
       ),
     );
   }
 
-  // static Future<int?> newSection1(String title) async {
-  //   MySqlConnection conn = await Mysql().getConnection();
-  //   final sec = SectionModel(sectionTitle: title, sectionId: 0);
-  //   var result =
-  //       await conn.query('INSERT INTO sections(title) VALUES (?)', [sec.title]);
-
-  //   await conn.close();
-
-  //   return result.affectedRows;
-  // }
-
-  Future<void> addSection(BuildContext context) async {
+  Future<void> addSection(BuildContext context, SectionProvider sectionProvider) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -159,26 +71,29 @@ class _SectionWidgetState extends State<SectionWidget> {
                 ),
               ),
               TextButton(
-                onPressed: (() {
+                onPressed: () {
                   if (titleController.text.isNotEmpty) {
-                    context.read<SectionProvider>().add(
-                          SectionModel(
-                            sectionId: 0,
-                            sectionTitle: titleController.text,
-                          ),
-                        );
+                    final newSection = SectionModel(
+                      sectionId: 0,
+                      sectionTitle: titleController.text,
+                      topics: [],
+                    );
+                    sectionProvider.add(newSection);
+                    titleController.clear();
+
                     Navigator.pop(context);
                   }
-                }),
+                },
                 child: const Text(
                   "Ok",
                   style: TextStyle(),
                 ),
               ),
               TextButton(
-                onPressed: (() {
+                onPressed: () {
+                  titleController.clear();
                   Navigator.pop(context);
-                }),
+                },
                 child: const Text(
                   "Cancel",
                   style: TextStyle(),
@@ -209,6 +124,64 @@ class _SectionWidgetState extends State<SectionWidget> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class createSectionCard extends StatelessWidget {
+  const createSectionCard({
+    super.key,
+    required this.widget,
+    required this.sectionsProvider,
+  });
+
+  final SectionWidget widget;
+  final SectionProvider sectionsProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        children: widget.allSections.toList().map((e) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Consumer<SectionProvider>(
+                    builder: (context, value, child) {
+                      return NewSectionWidget(
+                        newSection: e,
+                        allTopics: UnmodifiableListView([]),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
+                title: Text(
+                  e.title,
+                  style: TextStyle(fontSize: 24),
+                ),
+                trailing: IconButton(
+                  onPressed: () {
+                    final index = sectionsProvider.allSections.indexOf(e);
+                    sectionsProvider
+                        .deleteSection(sectionsProvider.allSections[index]);
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

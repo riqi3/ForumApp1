@@ -14,8 +14,7 @@ class TopicProvider with ChangeNotifier {
 
   final List<TopicModel> _topics = [];
 
-  UnmodifiableListView<TopicModel> get allTopics =>
-      UnmodifiableListView(_topics);
+  UnmodifiableListView<TopicModel> get allTopics => UnmodifiableListView(_topics);
 
   // void toggleSection(TopicModel section) {
   //   final sectionIndex = sections.indexOf(section);
@@ -72,10 +71,12 @@ class TopicProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  String getTopicId(TopicModel list) {
-    int index = _topics.indexWhere((e) => e == list);
-    return _topics[index].id;
-  }
+  // String getTopicId(TopicModel list) {
+  //   int index = _topics.indexWhere((e) => e == list);
+  //   return _topics[index].id;
+  // }
+
+  
 
   String getTitle(String id) {
     return _topics[getIndex(id)].title;

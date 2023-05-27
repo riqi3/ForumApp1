@@ -11,81 +11,153 @@ import 'package:forum_app/widgets/TopicWidget.dart';
 
 import 'package:provider/provider.dart';
 
+import '../models/SectionModel.dart';
+import '../providers/SectionProvider.dart';
+
 class TopicWidget extends StatelessWidget {
-  final UnmodifiableListView<TopicModel> allTopics;
+  
+  final List<TopicModel> allTopics;
   TopicWidget({
     Key? key,
+ 
     required this.allTopics,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.orangeAccent,
-      appBar: AppBar(centerTitle: true, title: Text('s')),
-      body: Column(
+    final topicsProvider = Provider.of<TopicProvider>(context);
+    return  Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          context.read<TopicProvider>().empty()
-              ? emptyCard(context)
-              : Expanded(
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: allTopics.map((e) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => Consumer<TopicProvider>(
-                                builder: (context, value, child) {
-                                  String id = value.getTopicId(e);
-                                  return NewTopicWidget(
- 
-                                    allTopics: allTopics, 
-                                  );
-                                  // return Text('${e.id}. ${e.title}, ${e.description}');
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ListTile(
-                            title: Text(
-                              e.title,
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            subtitle: Text(
-                              e.description,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                context.read<TopicProvider>().deleteTopic(e);
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
+          if (topicsProvider.empty())
+            emptyCard(context)
+          else
+
+          
+          // Expanded(
+          //   child: ListView(
+          //     scrollDirection: Axis.vertical,
+          //     shrinkWrap: true,
+          //     children: newSection.topicList.map((e) {
+          //       return GestureDetector(
+          //         onTap: () {
+          //           Navigator.of(context).push(
+          //             MaterialPageRoute(
+          //               builder: (context) => Consumer<TopicProvider>(
+          //                 builder: (context, value, child) {
+          //                   context.read<SectionProvider>().add(newSection);
+          //                   // return TopicWidget(allTopics: allTopics);
+          //                   return DummyScreen();
+          //                   // NewTopicWidget(
+          //                   //   newTopic: e,
+          //                   //   allTopics: UnmodifiableListView(e.topicList),
+          //                   // );
+          //                 },
+          //               ),
+          //             ),
+          //           );
+          //         },
+          //         child: Padding(
+          //           padding: const EdgeInsets.symmetric(horizontal: 10),
+          //           child: ListTile(
+          //             title: Text(
+          //               e.title,
+          //               style: TextStyle(fontSize: 24),
+          //             ),
+          //             subtitle: Text(
+          //               e.description,
+          //               maxLines: 2,
+          //               overflow: TextOverflow.ellipsis,
+          //               style: TextStyle(fontSize: 15),
+          //             ),
+          //             trailing: IconButton(
+          //               onPressed: () {
+          //                 context.read<TopicProvider>().deleteTopic(e);
+          //               },
+          //               icon: const Icon(
+          //                 Icons.delete,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     }).toList(),
+          //   ),
+          // ),
+          
+          Expanded(
+            
+            child: ListView.builder(
+              
+              itemCount: allTopics.length,
+              itemBuilder: (context, index) {
+                final topic = allTopics[index];
+                return ListTile(
+                  title: Text(topic.title),
+                  subtitle: Text(topic.description),
+                  // Add any other details of the topic
+                );
+              },
+            ),
+          ),
+
+
+    //         Expanded(
+    //           child: ListView(
+    //             scrollDirection: Axis.vertical,
+    //             shrinkWrap: true,
+    //             children: widget.allTopics.toList().map((e) {
+    //               return GestureDetector(
+    //                 onTap: () {
+    //                   Navigator.of(context).push(
+    //                     MaterialPageRoute(
+    //                       builder: (context) => Consumer<TopicProvider>(
+    //                         builder: (context, value, child) {
+                            
+    //                           // return NewTopicWidget(
+    //                           //   newTopic: e,
+    //                           //   allTopics: widget.allTopics,
+    //                           // );
+    // //                               return Container(
+    // //   width: 100,
+    // //   height: 100,
+    // //   color: Color.fromARGB(255, 64, 238, 251),
+    // // );
+    //                           return Text('${e.id}. ${e.title}, ${e.description}');
+    //                         },
+    //                       ),
+    //                     ),
+    //                   );
+    //                 },
+    //                 child: Padding(
+    //                   padding: const EdgeInsets.symmetric(horizontal: 10),
+    //                   child: ListTile(
+    //                     title: Text(
+    //                       e.title,
+    //                       style: TextStyle(fontSize: 24),
+    //                     ),
+    //                     subtitle: Text(
+    //                       e.description,
+    //                       maxLines: 2,
+    //                       overflow: TextOverflow.ellipsis,
+    //                       style: TextStyle(fontSize: 15),
+    //                     ),
+    //                     trailing: IconButton(
+    //                       onPressed: () {
+    //                         context.read<TopicProvider>().deleteTopic(e);
+    //                       },
+    //                       icon: const Icon(
+    //                         Icons.delete,
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 ),
+    //               );
+    //             }).toList(),
+    //           ),
+    //         ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          addTopic(context);
-        },
-        label: Text('Add Topic'),
-      ),
-    );
+      );
   }
 
   Future<void> addTopic(BuildContext context) async {
@@ -124,7 +196,7 @@ class TopicWidget extends StatelessWidget {
                     context.read<TopicProvider>().add(
                           TopicModel(
                               topicTitle: titleController.text,
-                              topicDescription: descriptionController.text),
+                              topicDescription: descriptionController.text, topicId: 0),
                         );
                     Navigator.pop(context);
                   }
@@ -172,8 +244,6 @@ class TopicWidget extends StatelessWidget {
     );
   }
 }
-
-
 
 // import 'dart:collection';
 

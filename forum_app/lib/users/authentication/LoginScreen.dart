@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forum_app/home.dart';
+import 'package:forum_app/screens/SectionScreen.dart';
 import 'package:forum_app/users/authentication/RegisterScreen.dart';
 import 'package:forum_app/widgets/SectionWidget.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.to(HomeScreen());
+                          Get.to(SectionScreen());
                         },
                         child: const Text(
                           "Login",

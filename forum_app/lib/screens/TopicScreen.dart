@@ -1,41 +1,30 @@
-// import 'package:flutter/material.dart';
-// import 'package:forum_app/providers/TopicProvider.dart';
-// import 'package:forum_app/widgets/TopicWidget.dart';
-// import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/TopicProvider.dart';
+import '../widgets/TopicWidget.dart';
+class TopicScreen extends StatefulWidget {
+  const TopicScreen({super.key});
 
-// class TopicScreen extends StatelessWidget {
-//   const TopicScreen({Key? key}) : super(key: key);
+  @override
+  State<TopicScreen> createState() => _TopicScreenState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.orange,
-//       body: topicListConsumer(context),
-//     );
-//   }
+class _TopicScreenState extends State<TopicScreen> {
+  String title = "Topic Screen";
 
-// // MaterialPageRoute(
-// //                               builder: (context) => Consumer<TopicProvider>(
-// //                                 builder: (context, value, child) {
-// //                                   String id = value.getTopicId(e);
-// //                                   return NewTopicWidget(
-// //                                     newTopic: e,
-// //                                     allTopics:
-// //                                         UnmodifiableListView(e.topicList),
-// //                                     id: id,
-// //                                     title: value.getTitle(id),
-// //                                   );
-// //                                 },
-// //                               ),
-// //                             ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.greenAccent,
+      body: topicListConsumer(context),
+    );
+  }
+}
 
-//   Widget topicListConsumer(BuildContext context) {
-//     return Consumer<TopicProvider>(
-//       builder: (context, value, child) {
-//         return TopicWidget(
-//           allTopics: value.allTopics,
-//         );
-//       },
-//     );
-//   }
-// }
+Widget topicListConsumer(BuildContext context) {
+  return Consumer<TopicProvider>(
+    builder: (context, value, child) {
+      return TopicWidget(allTopics: value.allTopics);
+    },
+  );
+}
