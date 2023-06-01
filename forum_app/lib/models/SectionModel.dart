@@ -11,7 +11,7 @@ class SectionModel {
   int sectionId;
   String sectionTitle;
   List<CommentsModel> comments = [];
-  List<TopicModel> topics;
+  List<String> topics;
   List<SectionModel> sections = [];
 
   SectionModel({
@@ -21,10 +21,12 @@ class SectionModel {
   });
 
   List<CommentsModel> get commentList => comments;
-  List<TopicModel> get topicList => topics;
+  // List<TopicModel> get topicList => topics;
   List<SectionModel> get sectionList => sections;
   int get id => sectionId;
   String get title => sectionTitle;
+
+ 
 
   set setId(int id) {
     sectionId = id;
@@ -34,25 +36,27 @@ class SectionModel {
     sectionTitle = title;
   }
 
-  void addTopic(TopicModel topic) {
-    topics.add(topic);
-  }
+  // void addTopic(TopicModel topic) {
+  //   topics.add(topic);
+  // }
 
-  void removeTopic(TopicModel topic) {
-    topics.remove(topic);
-  }
+  // void removeTopic(TopicModel topic) {
+  //   topics.remove(topic);
+  // }
 
     void setSectionList(List<SectionModel> section) {
      sections = section;
   }
 
-  void setTopicList(List<TopicModel> topics) {
-    this.topics = topics;
-  }
+  // void setTopicList(List<TopicModel> topics) {
+  //   this.topics = topics;
+  // }
 
   void setCommentList(List<CommentsModel> comments) {
     this.comments = comments;
   }
+
+  
 
   factory SectionModel.fromJson(Map<String, dynamic> json) {
     return SectionModel(
@@ -67,16 +71,16 @@ class SectionModel {
       };
 
 
-    SectionModel copyWith({
-    List<TopicModel>? topicList,
-    // Add other properties you want to update here...
-  }) {
-    return SectionModel(
-      sectionId: this.sectionId,
-      sectionTitle: this.title,
-      // Copy other existing properties...
-      topics: topicList ?? this.topicList,
-      // Assign the updated topicList or use the existing one if not provided.
-    );
-  }
+  //   SectionModel copyWith({
+  //   List<TopicModel>? topicList,
+  //   // Add other properties you want to update here...
+  // }) {
+  //   return SectionModel(
+  //     sectionId: this.sectionId,
+  //     sectionTitle: this.title,
+  //     // Copy other existing properties...
+  //     topics: topicList ?? this.topicList,
+  //     // Assign the updated topicList or use the existing one if not provided.
+  //   );
+  // }
 }

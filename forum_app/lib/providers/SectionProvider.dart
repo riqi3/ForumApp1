@@ -11,6 +11,7 @@ class SectionProvider with ChangeNotifier {
   }
 
   List<SectionModel> _sections = [];
+    List<TopicModel> _topics = [];
 
   UnmodifiableListView<SectionModel> get allSections =>
       UnmodifiableListView(_sections);
@@ -44,6 +45,8 @@ class SectionProvider with ChangeNotifier {
     }
     // return _sections;
   }
+
+ 
 
     void add(SectionModel section) async {
     const url = 'http://10.0.2.2:8000/sections/';

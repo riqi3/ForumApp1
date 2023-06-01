@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forum_app/dummy.dart';
 import 'package:forum_app/models/TopicModel.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
+import 'package:forum_app/screens/TopicScreen.dart';
 import 'package:provider/provider.dart';
 
 
@@ -41,18 +42,22 @@ class NewTopicWidget extends StatelessWidget {
           if (newTopicsProvider.empty())
             emptyCard(context)
           else
-          Expanded(
-            child: ListView.builder(
-              itemCount: allTopics.length,
-              itemBuilder: (context, index) {
-                final topic = allTopics[index];
-                return ListTile(
-                  title: Text(topic.title),
-                  // Add any other details of the topic
-                );
-              },
-            ),
-          ),
+          Expanded(child:TopicScreen()),
+          // Expanded(
+          //   child: ListView.builder(
+          //     itemCount: allTopics.length,
+          //     itemBuilder: (context, index) {
+          //       final topic = allTopics[index];
+          //       return ListTile(
+          //         title: Text(topic.title),
+          //         // Add any other details of the topic
+          //       );
+          //     },
+          //   ),
+          // ),
+
+
+
             // Expanded(
             //   child: ListView(
             //     scrollDirection: Axis.vertical,

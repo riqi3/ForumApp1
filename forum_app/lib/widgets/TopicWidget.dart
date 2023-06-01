@@ -7,6 +7,7 @@ import 'package:forum_app/models/TopicModel.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
 import 'package:forum_app/screens/TopicScreen.dart';
 import 'package:forum_app/widgets/NewTopicWidget.dart';
+import 'package:forum_app/widgets/SectionWidget.dart';
 import 'package:forum_app/widgets/TopicWidget.dart';
 
 import 'package:provider/provider.dart';
@@ -92,10 +93,37 @@ class TopicWidget extends StatelessWidget {
               itemCount: allTopics.length,
               itemBuilder: (context, index) {
                 final topic = allTopics[index];
-                return ListTile(
-                  title: Text(topic.title),
-                  subtitle: Text(topic.description),
-                  // Add any other details of the topic
+                return GestureDetector(
+                  onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Consumer<SectionProvider>(
+                    builder: (context, value, child) {
+                      //temporarily
+                      return SectionWidget(allSections: UnmodifiableListView([]),
+                       
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+                  child: ListTile(
+                  title: Text(
+                    topic.title,
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      final index = topicsProvider.allTopics.indexOf(topic);
+                      topicsProvider
+                          .deleteTopic(topicsProvider.allTopics[index]);
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                    ),
+                  ),
+                              ),
                 );
               },
             ),

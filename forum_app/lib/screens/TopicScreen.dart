@@ -15,7 +15,7 @@ class _TopicScreenState extends State<TopicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Colors.purpleAccent,
       body: topicListConsumer(context),
     );
   }

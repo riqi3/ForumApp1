@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
-import 'package:forum_app/users/authentication/LoginScreen.dart';
+import 'package:forum_app/screens/LoginScreen.dart';
 import 'package:forum_app/widgets/NewSectionWidget.dart';
 import 'package:forum_app/widgets/SectionWidget.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'home.dart';
+import 'models/UserCubitModel.dart';
+import 'models/UserModel.dart';
 import 'providers/SectionProvider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
   runApp(
     MultiProvider(
       providers: [
@@ -33,7 +40,10 @@ class ForumApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return BlocProvider(create: (context){
+      return UserCubit(User());
+    },
+    child: ChangeNotifierProvider(
       create: ((context) => SectionProvider()),
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -41,13 +51,15 @@ class ForumApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
+        home: const LoginScreen(),
         // home: HomeScreen(),
-        home: FutureBuilder(
-          builder: (context, dataSnapShot) {
-            return LoginScreen();
-          },
-        ),
+        // home: FutureBuilder(
+        //   builder: (context, dataSnapShot) {
+        //     return LoginScreen();
+        //   },
+        // ),
       ),
+    ),
     );
   }
 }

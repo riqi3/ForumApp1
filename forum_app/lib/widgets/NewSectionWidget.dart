@@ -5,19 +5,26 @@ import 'package:forum_app/models/TopicModel.dart';
 import 'package:forum_app/providers/TopicProvider.dart';
 import 'package:forum_app/screens/TopicScreen.dart';
 import 'package:forum_app/widgets/NewTopicWidget.dart';
+import 'package:forum_app/widgets/SectionWidget.dart';
 import 'package:provider/provider.dart';
 import '../providers/SectionProvider.dart';
+import 'TopicWidget.dart';
 
-class NewSectionWidget extends StatelessWidget {
-  SectionModel newSection;
+class NewSectionWidget extends StatefulWidget {
+  final SectionModel newSection;
   final UnmodifiableListView<TopicModel> allTopics;
 
-  NewSectionWidget({
+  const NewSectionWidget({
     Key? key,
     required this.newSection,
     required this.allTopics,
   }) : super(key: key);
 
+  @override
+  State<NewSectionWidget> createState() => _NewSectionWidgetState();
+}
+
+class _NewSectionWidgetState extends State<NewSectionWidget> {
   @override
   Widget build(BuildContext context) {
     TextEditingController titleController = TextEditingController();
@@ -25,30 +32,62 @@ class NewSectionWidget extends StatelessWidget {
     final topicProvider = Provider.of<TopicProvider>(context);
     final sectionProvider = Provider.of<SectionProvider>(context);
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text(newSection.title)),
+      appBar: AppBar(centerTitle: true, title: Text(widget.newSection.title)),
       backgroundColor: Colors.orangeAccent,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          if (topicProvider.empty())
-            emptyCard(context)
-          else
-            createTopic(
-              newSection: newSection,
-              topicProvider: topicProvider,
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (topicProvider.empty())
+                  emptyCard(context)
+                else
+                  // createTopicCard(
+                  //   topicProvider: topicProvider,
+                  //   allTopics: widget.allTopics,
+                  //   widget: widget,
+                  // ),
+
+                  Consumer<SectionProvider>(
+                    builder: (context, value, child) {
+                      return Container(
+                        width: 200,
+                        height: 300,
+                        color: Colors.indigoAccent,
+                        child: topicListConsumer(context),
+                      );
+                    },
+                  ),
+                // Expanded(child: topicListConsumer(context))
+              ],
             ),
-            if (topicProvider.notEmpty())
-              Expanded(
-                 
-                child: TopicScreen(),
-              ),
+          ),
         ],
       ),
+
+      // body: Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: <Widget>[
+      //     if (topicProvider.empty())
+      //       emptyCard(context)
+      //     else
+
+      //        createTopicCard(
+      //         newSection: newSection,
+      //         topicProvider: topicProvider,
+      //         allTopics: allTopics,
+      //       ),
+      //       Expanded(child: topicListConsumer(context))
+
+      //   ],
+      // ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add topic',
         onPressed: () {
-          addTopic(
-              context, titleController, descriptionController, topicProvider);
+          addTopic(context, titleController, descriptionController,
+              topicProvider, sectionProvider);
         },
         label: Text('Add Topic'),
       ),
@@ -56,11 +95,12 @@ class NewSectionWidget extends StatelessWidget {
   }
 
   Future<void> addTopic(
-      BuildContext context,
-      TextEditingController titleController,
-      TextEditingController descriptionController,
-      TopicProvider topicProvider,
-      ) async {
+    BuildContext context,
+    TextEditingController titleController,
+    TextEditingController descriptionController,
+    TopicProvider topicProvider,
+    SectionProvider sectionProvider,
+  ) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -79,7 +119,7 @@ class NewSectionWidget extends StatelessWidget {
                   hintText: 'Title',
                 ),
               ),
-                            TextField(
+              TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
                   hintText: 'Description',
@@ -89,13 +129,13 @@ class NewSectionWidget extends StatelessWidget {
                 onPressed: () {
                   if (titleController.text.isNotEmpty &&
                       descriptionController.text.isNotEmpty) {
-                    final newTopic = TopicModel(
-                      topicId: 0,
-                      topicTitle: titleController.text,
-                      topics: [],
+                    topicProvider.add(
+                      TopicModel(
+                        topicTitle: titleController.text,
+                        topicDescription: descriptionController.text,
+                        topicId: 0,
+                      ),
                     );
-                    topicProvider.add(newTopic);
-                    titleController.clear();
 
                     Navigator.pop(context);
                   }
@@ -105,6 +145,33 @@ class NewSectionWidget extends StatelessWidget {
                   style: TextStyle(),
                 ),
               ),
+
+              // () {
+              //   if (titleController.text.isNotEmpty &&
+              //       descriptionController.text.isNotEmpty) {
+              //     final newTopic = TopicModel(
+              //       topicId: 0,
+              //       topicTitle: titleController.text,
+              //       topics: [],
+              //     );
+              //     topicProvider.add(newTopic);
+
+              //     final updatedSection = newSection.copyWith(
+              //       topicList: [
+              //         ...newSection.topicList,
+              //         TopicModel(
+              //           topicTitle: titleController.text,
+              //           topicDescription: descriptionController.text,
+              //           topicId: 0,
+              //         ),
+              //       ],
+              //     );
+              //     sectionProvider.updateSection(updatedSection);
+              //     titleController.clear();
+              //     Navigator.pop(context);
+              //   }
+              // },
+
               TextButton(
                 onPressed: () {
                   titleController.clear();
@@ -145,41 +212,40 @@ class NewSectionWidget extends StatelessWidget {
   }
 }
 
-
-class createTopic extends StatelessWidget {
-  const createTopic({
-    super.key,
-    required this.newSection,
-    required this.topicProvider,
-  });
-
-  final SectionModel newSection;
+class createTopicCard extends StatelessWidget {
+  final UnmodifiableListView<TopicModel> allTopics;
   final TopicProvider topicProvider;
+  final NewSectionWidget widget;
+
+  const createTopicCard({
+    super.key,
+    required this.widget,
+    required this.topicProvider,
+    required this.allTopics,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        children: newSection.topicList.toList().map((e) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Consumer<TopicProvider>(
-                    builder: (context, value, child) {
-                      return NewTopicWidget(
-                        allTopics: const [],
-                        newTopic: e,
-                      );
-                    },
+    return Column(
+      children: widget.allTopics
+          .map(
+            (e) => GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Consumer<SectionProvider>(
+                      builder: (context, value, child) {
+                        // temporarily
+                        return TopicScreen();
+                        // NewSectionWidget(
+                        //   newSection: e,
+                        //   allTopics: UnmodifiableListView([]),
+                        // );
+                      },
+                    ),
                   ),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+                );
+              },
               child: ListTile(
                 title: Text(
                   e.title,
@@ -193,7 +259,8 @@ class createTopic extends StatelessWidget {
                 ),
                 trailing: IconButton(
                   onPressed: () {
-                    context.read<TopicProvider>().deleteTopic(e);
+                    final index = topicProvider.allTopics.indexOf(e);
+                    topicProvider.deleteTopic(topicProvider.allTopics[index]);
                   },
                   icon: const Icon(
                     Icons.delete,
@@ -201,15 +268,105 @@ class createTopic extends StatelessWidget {
                 ),
               ),
             ),
-          );
-        }).toList(),
-      ),
+          )
+          .toList(),
     );
+
+    // Expanded(
+    //   child: ListView.builder(
+    //     itemCount: widget.allTopics.length,
+    //     itemBuilder: (context, index) {
+    //       final topic = widget.allTopics[index];
+    //       return GestureDetector(
+    //         onTap: () {
+    //           Navigator.of(context).push(
+    //             MaterialPageRoute(
+    //               builder: (context) => Consumer<TopicProvider>(
+    //                 builder: (context, value, child) {
+    //                   //temporarily
+    //                   return TopicScreen();
+    //                 },
+    //               ),
+    //             ),
+    //           );
+    //         },
+    //         child: Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 10),
+    //           child: ListTile(
+    //             title: Text(
+    //               topic.topicTitle,
+    //               style: TextStyle(fontSize: 24),
+    //             ),
+    //             subtitle: Text(
+    //               topic.topicDescription,
+    //               maxLines: 2,
+    //               overflow: TextOverflow.ellipsis,
+    //               style: TextStyle(fontSize: 15),
+    //             ),
+    //             trailing: IconButton(
+    //               onPressed: () {
+    //                 widget.topicProvider.deleteTopic(topic);
+    //               },
+    //               icon: const Icon(
+    //                 Icons.delete,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
+
+    // Expanded(
+    //   child: ListView(
+    //     scrollDirection: Axis.vertical,
+    //     shrinkWrap: true,
+    //     children: widget.allTopics.toList().map((e) {
+    //       return GestureDetector(
+    //         onTap: () {
+    //           Navigator.of(context).push(
+    //             MaterialPageRoute(
+    //               builder: (context) => Consumer<TopicProvider>(
+    //                 builder: (context, value, child) {
+    //                   //temporarily
+    //                   return TopicScreen();
+    //                 },
+    //               ),
+    //             ),
+    //           );
+    //         },
+    //         child: Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 10),
+    //           child: ListTile(
+    //             title: Text(
+    //               e.title,
+    //               style: TextStyle(fontSize: 24),
+    //             ),
+    //             subtitle: Text(
+    //               e.description,
+    //               maxLines: 2,
+    //               overflow: TextOverflow.ellipsis,
+    //               style: TextStyle(fontSize: 15),
+    //             ),
+    //             trailing: IconButton(
+    //               onPressed: () {
+    //                 final index = widget.topicProvider.allTopics.indexOf(e);
+    //                 widget.topicProvider
+    //                     .deleteTopic(widget.topicProvider.allTopics[index]);
+    //               },
+    //               icon: const Icon(
+    //                 Icons.delete,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     }).toList(),
+    //   ),
+    // );
   }
 }
-
- 
-
 
 // import 'dart:collection';
 
@@ -219,6 +376,7 @@ class createTopic extends StatelessWidget {
 // import 'package:forum_app/models/TopicModel.dart';
 // import 'package:forum_app/providers/SectionProvider.dart';
 // import 'package:forum_app/providers/TopicProvider.dart';
+// import 'package:forum_app/screens/TopicScreen.dart';
 
 // import 'package:provider/provider.dart';
 
@@ -331,8 +489,9 @@ class createTopic extends StatelessWidget {
 //                         builder: (context) => Consumer<TopicProvider>(
 //                           builder: (context, value, child) {
 //                             context.read<SectionProvider>().add(newSection);
-//                             // return TopicWidget(allTopics: allTopics);
-//                             return DummyScreen();
+//                             return TopicWidget(allTopics: allTopics);
+
+//                             // TopicScreen();
 //                             // NewTopicWidget(
 //                             //   newTopic: e,
 //                             //   allTopics: UnmodifiableListView(e.topicList),
@@ -415,12 +574,12 @@ class createTopic extends StatelessWidget {
 //                   hintText: 'Title',
 //                 ),
 //               ),
-              // TextField(
-              //   controller: descriptionController,
-              //   decoration: const InputDecoration(
-              //     hintText: 'Description',
-              //   ),
-              // ),
+//               TextField(
+//                 controller: descriptionController,
+//                 decoration: const InputDecoration(
+//                   hintText: 'Description',
+//                 ),
+//               ),
 //               TextButton(
 //                 onPressed: (() {
 //                   if (titleController.text.isNotEmpty &&

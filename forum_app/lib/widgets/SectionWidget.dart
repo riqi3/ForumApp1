@@ -9,10 +9,9 @@ TextEditingController titleController = TextEditingController();
 
 class SectionWidget extends StatefulWidget {
   final UnmodifiableListView<SectionModel> allSections;
- 
+
   const SectionWidget({
     Key? key,
- 
     required this.allSections,
   }) : super(key: key);
 
@@ -21,24 +20,28 @@ class SectionWidget extends StatefulWidget {
 }
 
 class _SectionWidgetState extends State<SectionWidget> {
-
-
-  
   @override
   Widget build(BuildContext context) {
     final sectionsProvider = Provider.of<SectionProvider>(context);
     return Scaffold(
       backgroundColor: Colors.limeAccent,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          if (sectionsProvider.empty())
-            emptyCard(context)
-          else
-            createSectionCard(
-              widget: widget,
-              sectionsProvider: sectionsProvider,
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (sectionsProvider.empty())
+                  emptyCard(context)
+                else
+                  createSectionCard(
+                    widget: widget,
+                    sectionsProvider: sectionsProvider,
+                  ),
+              ],
             ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -51,7 +54,8 @@ class _SectionWidgetState extends State<SectionWidget> {
     );
   }
 
-  Future<void> addSection(BuildContext context, SectionProvider sectionProvider) async {
+  Future<void> addSection(
+      BuildContext context, SectionProvider sectionProvider) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -130,59 +134,102 @@ class _SectionWidgetState extends State<SectionWidget> {
 }
 
 class createSectionCard extends StatelessWidget {
+  final SectionWidget widget;
+  final SectionProvider sectionsProvider;
+
   const createSectionCard({
     super.key,
     required this.widget,
     required this.sectionsProvider,
   });
 
-  final SectionWidget widget;
-  final SectionProvider sectionsProvider;
+
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        children: widget.allSections.toList().map((e) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Consumer<SectionProvider>(
-                    builder: (context, value, child) {
-                      return NewSectionWidget(
-                        newSection: e,
-                        allTopics: UnmodifiableListView([]),
-                      );
-                    },
-                  ),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                title: Text(
-                  e.title,
-                  style: TextStyle(fontSize: 24),
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    final index = sectionsProvider.allSections.indexOf(e);
-                    sectionsProvider
-                        .deleteSection(sectionsProvider.allSections[index]);
+      child: Container(
+        child: Column(
+          children: widget.allSections
+              .map(
+                (e) => GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => Consumer<SectionProvider>(
+                          builder: (context, value, child) {
+                            return NewSectionWidget(
+                              newSection: e,
+                              allTopics: UnmodifiableListView([]),
+                            );
+                          },
+                        ),
+                      ),
+                    );
                   },
-                  icon: const Icon(
-                    Icons.delete,
+                  child: ListTile(
+                    title: Text(
+                      e.title,
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        final index = sectionsProvider.allSections.indexOf(e);
+                        sectionsProvider
+                            .deleteSection(sectionsProvider.allSections[index]);
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              )
+              .toList(),
+        ),
       ),
     );
+    // return Expanded(
+    //   child: ListView(
+    //     scrollDirection: Axis.vertical,
+    //     shrinkWrap: true,
+    //     children: widget.allSections.toList().map((e) {
+    //       return GestureDetector(
+    //         onTap: () {
+    //           Navigator.of(context).push(
+    //             MaterialPageRoute(
+    //               builder: (context) => Consumer<SectionProvider>(
+    //                 builder: (context, value, child) {
+    //                   return NewSectionWidget(
+    //                     newSection: e,
+    //                     allTopics: UnmodifiableListView([]),
+    //                   );
+    //                 },
+    //               ),
+    //             ),
+    //           );
+    //         },
+    //         child: Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 10),
+    //           child: ListTile(
+    //             title: Text(
+    //               e.title,
+    //               style: TextStyle(fontSize: 24),
+    //             ),
+    //             trailing: IconButton(
+    //               onPressed: () {
+    //                 final index = sectionsProvider.allSections.indexOf(e);
+    //                 sectionsProvider.deleteSection(sectionsProvider.allSections[index]);
+    //               },
+    //               icon: const Icon(
+    //                 Icons.delete,
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     }).toList(),
+    //   ),
+    // );
   }
 }

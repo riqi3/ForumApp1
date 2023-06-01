@@ -9,6 +9,7 @@ class TopicModel {
   List<TopicModel> topics = [];
   List<CommentsModel> comments = [];
   List<SectionModel> sections = [];
+  
 
   TopicModel({
     required this.topicId,
@@ -28,6 +29,7 @@ class TopicModel {
   set setId(int id) {
     topicId = id;
   }
+
 
   set setTitle(String title) {
     topicTitle = title;

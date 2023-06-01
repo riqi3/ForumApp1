@@ -1,0 +1,3 @@
+const tokenBox = 'NOTEPADTOKEN';
+
+ 
